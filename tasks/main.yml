@@ -1,0 +1,24 @@
+---
+# Main tasks
+
+- name: Import cisco backup tasks
+  ansible.builtin.import_tasks: cisco-config-backup.yml
+  when: cisco_backup | bool
+
+- name: Import junos backup tasks
+  ansible.builtin.import_tasks: junos-config-backup.yml
+  when: junos_backup | bool
+
+- name: Import f5 backup tasks
+  ansible.builtin.import_tasks: f5-config-backup.yml
+  when: f5_backup | bool
+
+- name: Import fortis backup tasks
+  ansible.builtin.import_tasks: fortios-config-backup.yml
+  when: fortios_backup | bool
+
+- name: Import linux servers backup tasks
+  ansible.builtin.import_tasks: linux-config-backup.yml
+  when: linux_backup | bool
+
+
