@@ -12,6 +12,12 @@ Role contains tasks that perform config backup of cisco devices
 # Dependencies
 - Playbook with variables.
 
+
+# How to use
+- Install the role : $ ansible-galaxy install -r collections/requirements.yml
+  ** The collections/requirements.yml file will be in your tool's repo**
+
+
 # Example Playbook
 
 Ref: appc-config-backup
