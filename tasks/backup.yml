@@ -1,12 +1,21 @@
 ---
 # Cisco configs backup tasks
+# - name: TEST - show ip int brief
+#   cisco.ios.ios_command:
+#     commands: show ip int brief
+#   register: cisco_int_output
+
+# - name: TEST - Display interface status
+#   ansible.builtin.debug:
+#     var: cisco_int_output['stdout_lines']
+
 - name: Collect cisco device running configs
   cisco.ios.ios_command:
     commands: show running-config
-  register: cisco_config_output
+  register: config_output
 
-- name: Set fact for next tasks
-  ansible.builtin.set_fact:
-    file_content: "{{ cisco_config_output.stdout[0] }}"
-    git_repo: "{{ cisco_backups_git_repo }}"
-    git_dir: "{{ cisco_backups_git_dir }}"
+- name: Save the configuration to the temporary config store
+  ansible.builtin.copy:
+    content: "{{ config_output['stdout'] }}"
+    dest: "{{ tmp_config_store }}"
+  delegate_to: localhost
