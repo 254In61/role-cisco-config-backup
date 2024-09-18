@@ -14,8 +14,23 @@
     commands: show running-config
   register: config_output
 
+# - name: Save the configuration to the temporary config store
+#   ansible.builtin.copy:
+#     content: "{{ config_output['stdout'] }}"
+#     dest: "{{ tmp_config_store }}"
+#   delegate_to: localhost
+
+
+# regex_replace('\r\n', '\n'): Ensures that the configuration is formatted properly with new lines,
+# in case the original output contains carriage return and line feed (\r\n).
+- name: Ensure the config is properly formatted
+  ansible.builtin.set_fact:
+    formatted_config: "{{ config_output.stdout[0] | regex_replace('\r\n', '\n') }}"
+  delegate_to: localhost
+
 - name: Save the configuration to the temporary config store
   ansible.builtin.copy:
-    content: "{{ config_output['stdout'] }}"
+    content: "{{ formatted_config }}"
     dest: "{{ tmp_config_store }}"
   delegate_to: localhost
+
