@@ -1,14 +1,4 @@
 ---
-# Cisco configs backup tasks
-# - name: TEST - show ip int brief
-#   cisco.ios.ios_command:
-#     commands: show ip int brief
-#   register: cisco_int_output
-
-# - name: TEST - Display interface status
-#   ansible.builtin.debug:
-#     var: cisco_int_output['stdout_lines']
-
 - name: Collect cisco device running configs
   cisco.ios.ios_command:
     commands: show running-config
