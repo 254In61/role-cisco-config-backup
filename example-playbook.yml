@@ -1,0 +1,27 @@
+---
+- name: Backup cisco configurations
+  hosts: appc_cisco_mgmt_sw 
+  gather_facts: false
+  connection: network_cli
+
+  vars:
+    ansible_network_os: ios
+
+  pre_tasks:
+    - name: Include specific project variables
+      ansible.builtin.include_vars:
+        dir: group_vars
+      delegate_to: localhost
+
+  tasks:
+    - name: Set file operations facts
+      ansible.builtin.set_fact:
+        tmp_config_store: "{{ root_dir }}/{{ config_backup_file }}"
+        git_repo_vendor_dir: "{{ cisco_git_repo_dir }}"
+      delegate_to: localhost
+
+    - name: Import role-cisco-config-backup role
+      ansible.builtin.import_role:
+        name: role-cisco-config-backup
+      vars:
+        cisco: true

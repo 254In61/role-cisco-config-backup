@@ -1,0 +1,8 @@
+---
+# DIR
+root_dir: /tmp
+
+# FILES
+config_backup_file: "{{ inventory_hostname }}-running-config.cfg"
+
+ 

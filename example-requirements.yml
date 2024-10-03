@@ -1,0 +1,10 @@
+---
+# roles/requirements.yml
+roles:
+  - src: https://yourdomain.com.au/your-name-space/role-gitlab-config-backup-upload.git
+    scm: git
+    version: main
+
+  - src: https://yourdomain.com.au/your-name-space/role-cisco-config-backup.git
+    scm: git
+    version: main
