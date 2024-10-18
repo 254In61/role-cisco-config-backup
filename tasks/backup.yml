@@ -11,12 +11,19 @@
   ansible.builtin.set_fact:
     formatted_config: "{{ config_output.stdout[0] | regex_replace('\r\n', '\n') }}"
   delegate_to: localhost
-  ignore_errors: yes
+  ignore_errors: true
+  when: config_output["failed"] == false
+
+- name: Debug tmp config file
+  ansible.builtin.debug:
+    var: tmp_file_path
+  delegate_to: localhost
+  ignore_errors: true
 
 - name: Save the configuration to the temporary config store
   ansible.builtin.copy:
     content: "{{ formatted_config }}"
-    dest: "{{ tmp_config_store }}"
+    dest: "{{ tmp_file_path }}"
   delegate_to: localhost
-  ignore_errors: yes
-
+  ignore_errors: true
+  when: config_output["failed"] == false

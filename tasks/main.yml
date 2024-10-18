@@ -2,4 +2,4 @@
 # Main tasks
 - name: Import backup tasks
   ansible.builtin.import_tasks: backup.yml
-  when: cisco | bool
+  when: backup | bool
