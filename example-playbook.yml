@@ -14,14 +14,15 @@
       delegate_to: localhost
 
   tasks:
-    - name: Set file operations facts
-      ansible.builtin.set_fact:
-        tmp_config_store: "{{ root_dir }}/{{ config_backup_file }}"
-        git_repo_vendor_dir: "{{ cisco_git_repo_dir }}"
-      delegate_to: localhost
-
-    - name: Import role-cisco-config-backup role
+    - name: "Backup running configs to Gitlab repo => {{ config_backup_git_repo_name }}"
       ansible.builtin.import_role:
         name: role-cisco-config-backup
       vars:
-        cisco: true
+        backup: true
+        tmp_root_dir: "{{ root_dir }}"
+        vendor_dir: "{{ config_backup_git_repo_cisco_dir }}"
+        git_repo_name: "{{ config_backup_git_repo_name }}"
+        git_repo_url: "{{ config_backup_git_repo_url }}"
+        git_repo_branch: "{{ config_backup_git_repo_branch }}"
+        git_user: "{{ git_user }}"
+        git_user_email: "{{ git_user_email }}"
