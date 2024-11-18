@@ -93,6 +93,7 @@
   ansible.builtin.shell: |
      cd {{ tmp_root_dir }}/{{ git_repo_name }}
      git config --global user.name {{ git_user }}
+     git config --global user.email {{ git_user_email }}
      git add .
      git commit -m "file updates on $(date)"
      git push
