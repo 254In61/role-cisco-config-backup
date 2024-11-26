@@ -1,0 +1,71 @@
+---
+# Git tasks
+- name: Clean up files  # Ensure no git conflicts
+  ansible.builtin.shell: |
+    cd {{ tmp_root_dir }}
+    rm -rf {{ git_repo_name }}
+  run_once: true
+  ignore_errors: true
+  delegate_to: localhost
+
+- name: Clone the config backup git repository
+  ansible.builtin.git:
+    repo: "{{ git_repo_url }}"
+    dest: "{{ tmp_root_dir }}/{{ git_repo_name }}"
+    version: "{{ git_repo_branch }}"
+    force: yes       # Still clone down and overwrite incase local repo is existing.
+  ignore_errors: true
+  run_once: true
+  delegate_to: localhost
+
+# Enable git lfs by default
+- name: Enable git lfs by default
+  ansible.builtin.shell: |
+    cd {{ tmp_root_dir }}/{{ git_repo_name }}
+    git lfs track "*.bin"
+    git lfs track "*.ucs"
+    git lfs track "*.tgz" 
+    git lfs pull 
+  run_once: true
+  ignore_errors: true
+  delegate_to: localhost
+
+- name: Ensure inventory_hostname dir is present - create if absent
+  ansible.builtin.file:
+    path: "{{ inventory_hostname_dir_path }}"
+    state: directory
+  ignore_errors: true
+  delegate_to: localhost
+
+- name: List collected running config files
+  ansible.builtin.shell: |
+    ls -l {{ tmp_root_dir }}
+  run_once: true
+  delegate_to: localhost
+  register: files_collection
+  ignore_errors: true # You want the role to run end to end
+
+- name: Debug output
+  ansible.builtin.debug:
+    var: files_collection.stdout_lines
+  run_once: true
+  delegate_to: localhost
+  ignore_errors: true # You want the role to run end to end
+
+- name: Copy the .cfg file to local git repo
+  ansible.builtin.shell: |
+    cp {{ tmp_file_path }} {{ inventory_hostname_dir_path }}
+  ignore_errors: true
+  delegate_to: localhost
+
+- name: Commit the changes and push to the remote repository
+  ansible.builtin.shell: |
+     cd {{ tmp_root_dir }}/{{ git_repo_name }}
+     git config --global user.name {{ git_user }}
+     git config --global user.email {{ git_user_email }}
+     git add .
+     git commit -m "file updates on $(date)"
+     git push
+  run_once: true
+  ignore_errors: true # You want the role to run end to end
+  delegate_to: localhost
