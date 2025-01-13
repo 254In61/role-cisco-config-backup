@@ -1,5 +1,5 @@
 ---
-- name: Set varibales
+- name: Set varibles
   ansible.builtin.set_fact:
     tmp_file_path: "{{ tmp_root_dir }}/{{ inventory_hostname }}-running-config.cfg"
     inventory_hostname_dir_path: "{{ tmp_root_dir }}/{{ git_repo_name }}/{{ vendor_dir }}/{{ inventory_hostname }}"
