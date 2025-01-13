@@ -21,11 +21,22 @@
   ignore_errors: true
   when: config_output["failed"] == false
 
-- name: Save the configuration to the temporary config store
-  ansible.builtin.copy:
-    content: "{{ formatted_config }}"
+# - name: Save the configuration to the temporary config store
+#   ansible.builtin.copy:
+#     content: "{{ formatted_config }}"
+#     dest: "{{ tmp_file_path }}"
+#   delegate_to: localhost
+#   ignore_errors: true
+#   when: config_output["failed"] == false
+
+# Add date and time at the top of the file and save the configuration
+- name: Save the configuration with timestamp
+  ansible.builtin.template:
+    src: running_config.j2
     dest: "{{ tmp_file_path }}"
   delegate_to: localhost
+  vars:
+    timestamp: "{{ ansible_date_time.date }} {{ ansible_date_time.time }}"
   ignore_errors: true
   when: config_output["failed"] == false
 
