@@ -8,15 +8,21 @@
   ignore_errors: true
   delegate_to: localhost
 
+# git tasks
 - name: Clone the config backup git repository
   ansible.builtin.git:
-    repo: "{{ git_repo_url }}"
+    #repo: "{{ git_repo_url }}"
+    #repo: "https://{{ git_user }}:{{ git_pwd }}@{{ git_repo_path}}"
+    repo: "https://{{ git_user }}:{{ git_token }}@{{ git_repo_path }}"
     dest: "{{ tmp_root_dir }}/{{ git_repo_name }}"
     version: "{{ git_repo_branch }}"
     force: yes       # Still clone down and overwrite incase local repo is existing.
-  ignore_errors: true
+  # ignore_errors: true # You want this to fail if errors are there
+  environment:
+    GIT_SSL_NO_VERIFY: "true"
   run_once: true
   delegate_to: localhost
+  ignore_errors: true # You want the role to run end to end
 
 # Enable git lfs by default
 - name: Enable git lfs by default
@@ -58,26 +64,15 @@
   ignore_errors: true
   delegate_to: localhost
 
-# - name: Commit the changes and push to the remote repository
-#   ansible.builtin.shell: |
-#      cd {{ tmp_root_dir }}/{{ git_repo_name }}
-#      git config --global user.name {{ git_user }}
-#      git config --global user.email {{ git_user_email }}
-#      git add .
-#      git commit -m "file updates on $(date)"
-#      git push
-#   run_once: true
-#   ignore_errors: true # You want the role to run end to end
-#   delegate_to: localhost
-
 - name: Commit the changes and push to the remote repository
   ansible.builtin.shell: |
      cd {{ tmp_root_dir }}/{{ git_repo_name }}
      git config user.name {{ git_user }}
-     git config user.email {{ git_user_email }}
+     git config user.email {{ git_email }}
+     git config lfs.https://{{ git_user }}:{{ git_token }}@{{ git_repo_path }}.info/lfs.locksverify true
      git add .
      git commit -m "file updates on $(date)"
-     git push https://{{ git_robot_token }}@{{ git_repo_url }}
+     git push https://{{ git_user }}:{{ git_token }}@{{ git_repo_path }}
   run_once: true
   ignore_errors: true # You want the role to run end to end
   delegate_to: localhost
