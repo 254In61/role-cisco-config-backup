@@ -1,11 +1,4 @@
 ---
-- name: Set varibles
-  ansible.builtin.set_fact:
-    tmp_file_path: "{{ tmp_root_dir }}/{{ inventory_hostname }}-running-config.cfg"
-    inventory_hostname_dir_path: "{{ tmp_root_dir }}/{{ git_repo_name }}/{{ vendor_dir }}/{{ inventory_hostname }}"
-  delegate_to: localhost
-  ignore_errors: true # You want the role to run end to end
-
 - name: Collect cisco device running configs
   cisco.ios.ios_command:
     commands: show running-config
@@ -21,24 +14,10 @@
   ignore_errors: true
   when: config_output["failed"] == false
 
-- name: Save the configuration to the temporary config store
+- name: Save the configuration to the temporary file
   ansible.builtin.copy:
     content: "{{ formatted_config }}"
-    dest: "{{ tmp_file_path }}"
+    dest: "{{ _local_file_path_ }}"
   delegate_to: localhost
   ignore_errors: true
   when: config_output["failed"] == false
-
-# # Add date and time at the top of the file and save the configuration
-# - name: Save the configuration with timestamp
-#   ansible.builtin.template:
-#     src: running_config.j2
-#     dest: "{{ tmp_file_path }}"
-#   delegate_to: localhost
-#   vars:
-#     timestamp: "{{ ansible_date_time.date }} {{ ansible_date_time.time }}"
-#   ignore_errors: true
-#   when: config_output["failed"] == false
-
-- name: Import Tasks
-  ansible.builtin.import_tasks: git.yml
