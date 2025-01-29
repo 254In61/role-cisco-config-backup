@@ -21,3 +21,7 @@ Step 3: Call the role from your playbook.
 
 ## example playbook
 - See example-playbook.yml
+
+## Notes
+- Role extracts the running configuration and dumps them on a file in the local disk.
+- Tasks have to be included to send this file somewhere e.g git repo or to an artifacts store.

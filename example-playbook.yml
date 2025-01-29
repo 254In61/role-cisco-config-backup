@@ -14,15 +14,10 @@
       delegate_to: localhost
 
   tasks:
-    - name: "Backup running configs to Gitlab repo => {{ config_backup_git_repo_name }}"
+    - name: Collect device running configs and write to a temporary file
       ansible.builtin.import_role:
         name: role-cisco-config-backup
       vars:
-        backup: true
-        tmp_root_dir: "{{ root_dir }}"
-        vendor_dir: "{{ config_backup_git_repo_cisco_dir }}"
-        git_repo_name: "{{ config_backup_git_repo_name }}"
-        git_repo_url: "{{ config_backup_git_repo_url }}"
-        git_repo_branch: "{{ config_backup_git_repo_branch }}"
-        git_user: "{{ git_user }}"
-        git_user_email: "{{ git_user_email }}"
+        _backup_: true
+        _tmp_root_dir_: "{{ tmp_base_dir }}"
+        _local_file_path_: "{{ tmp_base_dir }}/{{ git_repo_config_backup_dir_path }}/{{ config_backup_file_name }}"
