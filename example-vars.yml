@@ -1,3 +1,0 @@
----
-_tmp_root_dir_: "{{ tmp_base_dir }}"    # Base directory on the container e,g /tmp
-_local_file_path_: "{{ tmp_base_dir }}/{{ git_repo_subdir_path }}/{{ config_backup_file_name }}" # Where configs are dumped on the local container.
